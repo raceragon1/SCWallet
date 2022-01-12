@@ -34,6 +34,8 @@ contract Bank{
     }
 
 /////////drain all
-   // if(msg.sender==bossman){
-    //        function drainall() public {
+    function drainall() public {
+          require(msg.sender == bossman);
+      }
+
 }
