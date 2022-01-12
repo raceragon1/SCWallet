@@ -5,8 +5,12 @@ contract Bank{
     
 //////////intial set up and events
     
+    uint pot;  //the money?
+
     mapping(address => uint)  Account ;
-    address public bossman;
+
+    address bossman;  //deployer
+    uint front;  //fake money?
 
     constructor(){
         bossman = msg.sender;
@@ -22,20 +26,25 @@ contract Bank{
 //////////deposits fn
 
     function Deposite(uint Amount) public{
-        Account[msg.sender] = Account[msg.sender] + Amount;
+        pot = pot + Amount;
+        front = Amount;
+        Account[msg.sender] = Account[msg.sender] + front;
         //emit deposite(balance);
     }
 
 //////////withdraw fn
 
     function Withdraw (uint Amount) public{
-        Account[msg.sender] = Account[msg.sender] - Amount;
+        pot = pot - Amount;
+        front = Amount;
+        Account[msg.sender] = Account[msg.sender] - front;
         //emit withdraw(balance);
     }
 
 /////////drain all
     function drainall() public {
           require(msg.sender == bossman);
+          Account[msg.sender] = Account[msg.sender] + pot;
       }
 
 }
