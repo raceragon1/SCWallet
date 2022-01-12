@@ -12,9 +12,20 @@ contract Bank{
     address bossman;  //deployer
     uint front;  //fake money?
 
-    constructor(){
+     constructor(){
         bossman = msg.sender;
     }
+
+    modifier onlybossman{
+        require(msg.sender == bossman); //makes sure transcation occurs only when bossman is the msgsender
+         _;
+    }
+
+    //modifier amountCap{
+        //require( Account >= Amount);  // makes sure only amount of the account is taken from the pot
+        //_;
+    //}
+//////////////
 
     function Balance() view public returns(uint){
        return Account[msg.sender];
@@ -25,7 +36,7 @@ contract Bank{
 
 //////////deposits fn
 
-    function Deposite(uint Amount) public{
+    function Deposite(uint Amount) public {    //amountcap not added
         pot = pot + Amount;
         front = Amount;
         Account[msg.sender] = Account[msg.sender] + front;
@@ -34,7 +45,7 @@ contract Bank{
 
 //////////withdraw fn
 
-    function Withdraw (uint Amount) public{
+    function Withdraw (uint Amount) public {   //amountcap not added
         pot = pot - Amount;
         front = Amount;
         Account[msg.sender] = Account[msg.sender] - front;
@@ -42,8 +53,7 @@ contract Bank{
     }
 
 /////////drain all
-    function drainall() public {
-          require(msg.sender == bossman);
+    function drainall() public onlybossman {
           Account[msg.sender] = Account[msg.sender] + pot;
       }
 
