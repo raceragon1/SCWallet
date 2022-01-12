@@ -6,7 +6,11 @@ contract Bank{
 //////////intial set up and events
     
     mapping(address => uint)  Account ;
-   
+    address public bossman;
+
+    constructor(){
+        bossman = msg.sender;
+    }
 
     function Balance() view public returns(uint){
        return Account[msg.sender];
@@ -17,15 +21,19 @@ contract Bank{
 
 //////////deposits fn
 
-    function Deposite(uint Deposite_Amount) public{
-        Account[msg.sender] = Account[msg.sender] + Deposite_Amount;
+    function Deposite(uint Amount) public{
+        Account[msg.sender] = Account[msg.sender] + Amount;
         //emit deposite(balance);
     }
 
 //////////withdraw fn
 
-    function Withdraw (uint Withdraw_Amount) public{
-        Account[msg.sender] = Account[msg.sender] - Withdraw_Amount;
+    function Withdraw (uint Amount) public{
+        Account[msg.sender] = Account[msg.sender] - Amount;
         //emit withdraw(balance);
     }
+
+/////////drain all
+   // if(msg.sender==bossman){
+    //        function drainall() public {
 }
