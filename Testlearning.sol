@@ -21,10 +21,10 @@ contract Bank{
          _;
     }
 
-    //modifier amountCap{
-        //require( Account >= Amount);  // makes sure only amount of the account is taken from the pot
-        //_;
-    //}
+    modifier amountCap{
+        require( Account >= Amount);  // makes sure only amount of the account is taken from the pot
+        _;
+    }
 //////////////
 
     function Balance() view public returns(uint){
