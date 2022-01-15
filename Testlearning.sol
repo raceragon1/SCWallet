@@ -5,15 +5,16 @@ contract Bank{
     
 //////////intial set up and events
     
-    uint pot;  //the money?
+    //uint pot;  //the money?
 
     mapping(address => uint)  Account ;
 
-    address bossman;  //deployer
-    uint front;  //fake money?
+    address payable bossman;  //deployer
+    //uint front;  //fake money?
+    //uint Amount;
 
      constructor(){
-        bossman = msg.sender;
+        bossman = payable(msg.sender);
     }
 
     modifier onlybossman{
@@ -21,10 +22,10 @@ contract Bank{
          _;
     }
 
-    modifier amountCap(uint Amount){
-        require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
-        _;
-    }
+    //modifier amountCap(uint Amount){
+     //  require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
+     //  _;
+    //}
 //////////////
 
     function Balance() view public returns(uint){
@@ -36,25 +37,26 @@ contract Bank{
 
 //////////deposits fn
 
-    function Deposite(uint Amount) public {   
-        pot = pot + Amount;
-        front = Amount;
-        Account[msg.sender] = Account[msg.sender] + front;
+    function Deposite() public payable {   
+        //pot = pot + Amount;
+        //front = Amount;
+        Account[msg.sender] = Account[msg.sender] + msg.value;
         //emit deposite(balance);
     }
 
 //////////withdraw fn
-
-    function Withdraw (uint Amount) public amountCap(Amount) {   //amountcap not added
-        pot = pot - Amount;
-        front = Amount;
-        Account[msg.sender] = Account[msg.sender] - front;
+    //msg.value = Amount;
+    uint Amount ;
+    function Withdraw () public payable {   
+       // pot = pot - Amount;
+       // msg.value == Amount;
+        Account[msg.sender] = Account[msg.sender] - msg.value;
         //emit withdraw(balance);
     }
 
 /////////drain all
-    function drainall() public onlybossman {
-          Account[msg.sender] = Account[msg.sender] + pot;
-      }
+   function drainall() public onlybossman payable {
+        Account[msg.sender] = Account[msg.sender] + pot; //????????????????
+     }
 
 }
