@@ -21,8 +21,8 @@ contract Bank{
          _;
     }
 
-    modifier amountCap{
-        require( Account >= Amount);  // makes sure only amount of the account is taken from the pot
+    modifier amountCap(uint Amount){
+        require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
         _;
     }
 //////////////
@@ -36,7 +36,7 @@ contract Bank{
 
 //////////deposits fn
 
-    function Deposite(uint Amount) public {    //amountcap not added
+    function Deposite(uint Amount) public {   
         pot = pot + Amount;
         front = Amount;
         Account[msg.sender] = Account[msg.sender] + front;
@@ -45,7 +45,7 @@ contract Bank{
 
 //////////withdraw fn
 
-    function Withdraw (uint Amount) public {   //amountcap not added
+    function Withdraw (uint Amount) public amountCap(Amount) {   //amountcap not added
         pot = pot - Amount;
         front = Amount;
         Account[msg.sender] = Account[msg.sender] - front;
