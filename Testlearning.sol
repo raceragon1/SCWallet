@@ -7,13 +7,13 @@ contract Bank{
     
     //uint pot;  //the money?
 
-    mapping(address => uint)  Account ;
+    mapping(address => uint) Account  ;
 
     address payable bossman;  //deployer
     //uint front;  //fake money?
     //uint Amount;
 
-     constructor(){
+    constructor(){
         bossman = payable(msg.sender);
     }
 
@@ -22,16 +22,19 @@ contract Bank{
          _;
     }
 
-    //modifier amountCap(uint Amount){
-     //  require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
-     //  _;
-    //}
+    modifier amountCap(uint ){
+       require(msg.value <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
+       _;
+    }
 //////////////
 
     function Balance() view public returns(uint){
        return Account[msg.sender];
     }
 
+    function contractbalance() view public returns(uint){
+       return address(this).balance;
+    }
     //event withdraw(uint value) ;
     //event deposite(uint value) ;
 
@@ -46,17 +49,23 @@ contract Bank{
 
 //////////withdraw fn
     //msg.value = Amount;
-    uint Amount ;
-    function Withdraw () public payable {   
+   
+    function Withdraw (address payable address[msg.sender]) public payable amountCap(msg.value) {   
        // pot = pot - Amount;
-       // msg.value == Amount;
-        Account[msg.sender] = Account[msg.sender] - msg.value;
+        //msg.value == Amount;
+       // Account[msg.sender] = Account[msg.sender] - msg.value;
+       (msg.sender).transfer(msg.value);
         //emit withdraw(balance);
     }
 
 /////////drain all
-   function drainall() public onlybossman payable {
-        Account[msg.sender] = Account[msg.sender] + pot; //????????????????
+    uint drain;
+    
+   function drainall(address payable bossman) public onlybossman payable {
+       address(this).balance == drain;
+       bossman.transfer(drain);
+
+       // Account[msg.sender] = Account[msg.sender] + pot; //????????????????
      }
 
 }
