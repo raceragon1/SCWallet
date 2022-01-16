@@ -51,6 +51,13 @@ contract Bank{
        //emit withdraw(balance);
     }
 
+//////////transfer&send
+
+    function TransferFunds (payable address _to ,uint Amount) public payable amountCap(Amount) {
+        _to.transfer(Amount);
+        Account[msg.sender] = Account[msg.sender] - Amount;
+    }
+
 /////////drain all   
    function drainall() public onlybossman payable {
        bossman.transfer(contractbalance());
