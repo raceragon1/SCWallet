@@ -22,8 +22,8 @@ contract Bank{
          _;
     }
 
-    modifier amountCap(uint ){
-       require(msg.value <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
+    modifier amountCap(uint x){
+       require(x <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
        _;
     }
 //////////////
@@ -41,31 +41,26 @@ contract Bank{
 //////////deposits fn
 
     function Deposite() public payable {   
-        //pot = pot + Amount;
-        //front = Amount;
         Account[msg.sender] = Account[msg.sender] + msg.value;
         //emit deposite(balance);
     }
 
 //////////withdraw fn
     //msg.value = Amount;
-   
-    function Withdraw (address payable address[msg.sender]) public payable amountCap(msg.value) {   
-       // pot = pot - Amount;
-        //msg.value == Amount;
-       // Account[msg.sender] = Account[msg.sender] - msg.value;
-       (msg.sender).transfer(msg.value);
-        //emit withdraw(balance);
+    
+    function Withdraw (address payable _to) public payable  {   
+       // pot = pot - Amount
+       uint x = msg.value;
+       address payable _to = payable(msg.sender);
+       _to.transfer(x);
+
+       Account[msg.sender] = Account[msg.sender] - msg.value; 
+       //emit withdraw(balance);
     }
 
-/////////drain all
-    uint drain;
-    
-   function drainall(address payable bossman) public onlybossman payable {
-       address(this).balance == drain;
-       bossman.transfer(drain);
-
-       // Account[msg.sender] = Account[msg.sender] + pot; //????????????????
+/////////drain all   
+   function drainall() public onlybossman payable {
+       bossman.transfer(contractbalance());
      }
 
 }
