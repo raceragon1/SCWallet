@@ -4,14 +4,10 @@ pragma solidity ^0.8.1;
 contract Bank{       
     
 //////////intial set up and events
-    
-    //uint pot;  //the money?
 
     mapping(address => uint) Account  ;
 
     address payable bossman;  //deployer
-    //uint front;  //fake money?
-    //uint Amount;
 
     constructor(){
         bossman = payable(msg.sender);
@@ -22,8 +18,8 @@ contract Bank{
          _;
     }
 
-    modifier amountCap(uint x){
-       require(x <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
+    modifier amountCap(uint Amount){
+       require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the contract
        _;
     }
 //////////////
@@ -46,15 +42,12 @@ contract Bank{
     }
 
 //////////withdraw fn
-    //msg.value = Amount;
     
-    function Withdraw (address payable _to) public payable  {   
-       // pot = pot - Amount
-       uint x = msg.value;
+    
+    function Withdraw (uint Amount) public payable amountCap(Amount) {   
        address payable _to = payable(msg.sender);
-       _to.transfer(x);
-
-       Account[msg.sender] = Account[msg.sender] - msg.value; 
+       _to.transfer(Amount);
+       Account[msg.sender] = Account[msg.sender] - Amount; 
        //emit withdraw(balance);
     }
 
