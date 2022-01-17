@@ -53,7 +53,7 @@ contract Bank{
 
 //////////transfer&send
 
-    function TransferFunds (payable address _to ,uint Amount) public payable amountCap(Amount) {
+    function Fundstransfer (address payable _to,uint Amount) public amountCap(Amount) {
         _to.transfer(Amount);
         Account[msg.sender] = Account[msg.sender] - Amount;
     }
