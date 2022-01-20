@@ -4,16 +4,13 @@ pragma solidity ^0.8.1;
 contract Bank{       
     
 //////////intial set up and events
-    
-    uint pot;  //the money?
 
-    mapping(address => uint)  Account ;
+    mapping(address => uint) Account  ;
 
-    address bossman;  //deployer
-    uint front;  //fake money?
+    address payable bossman;  //deployer
 
-     constructor(){
-        bossman = msg.sender;
+    constructor(){
+        bossman = payable(msg.sender);
     }
 
     modifier onlybossman{
@@ -22,8 +19,8 @@ contract Bank{
     }
 
     modifier amountCap(uint Amount){
-        require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the pot
-        _;
+       require(Amount <= Account[msg.sender]);  // makes sure only amount of the account is taken from the contract
+       _;
     }
 //////////////
 
@@ -31,30 +28,39 @@ contract Bank{
        return Account[msg.sender];
     }
 
+    function contractbalance() view public returns(uint){
+       return address(this).balance;
+    }
     //event withdraw(uint value) ;
     //event deposite(uint value) ;
 
 //////////deposits fn
 
-    function Deposite(uint Amount) public {   
-        pot = pot + Amount;
-        front = Amount;
-        Account[msg.sender] = Account[msg.sender] + front;
+    function Deposite() public payable {   
+        Account[msg.sender] = Account[msg.sender] + msg.value;
         //emit deposite(balance);
     }
 
 //////////withdraw fn
-
-    function Withdraw (uint Amount) public amountCap(Amount) {   //amountcap not added
-        pot = pot - Amount;
-        front = Amount;
-        Account[msg.sender] = Account[msg.sender] - front;
-        //emit withdraw(balance);
+    
+    
+    function Withdraw (uint Amount) public payable amountCap(Amount) {   
+       address payable _to = payable(msg.sender);
+       _to.transfer(Amount);
+       Account[msg.sender] = Account[msg.sender] - Amount; 
+       //emit withdraw(balance);
     }
 
-/////////drain all
-    function drainall() public onlybossman {
-          Account[msg.sender] = Account[msg.sender] + pot;
-      }
+//////////transfer&send
+
+    function Fundstransfer (address payable _to,uint Amount) public amountCap(Amount) {
+        _to.transfer(Amount);
+        Account[msg.sender] = Account[msg.sender] - Amount;
+    }
+
+/////////drain all   
+   function drainall() public onlybossman payable {
+       bossman.transfer(contractbalance());
+     }
 
 }
